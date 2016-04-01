@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name=viewport content="width=device-width, initial-scale=1">
+	<link rel="apple-touch-icon" sizes="57x57" href="../images/wmicon/apple-icon-57x57.png">
+	<link rel="apple-touch-icon" sizes="60x60" href="../images/wmicon/apple-icon-60x60.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="/../images/wmicon/apple-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="76x76" href="../images/wmicon/apple-icon-76x76.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="../images/wmicon/apple-icon-114x114.png">
+	<link rel="apple-touch-icon" sizes="120x120" href="../images/wmicon/apple-icon-120x120.png">
+	<link rel="apple-touch-icon" sizes="144x144" href="../images/wmicon/apple-icon-144x144.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="../images/wmicon/apple-icon-152x152.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="../images/wmicon/apple-icon-180x180.png">
+	<link rel="icon" type="image/png" sizes="192x192"  href="../images/wmicon/android-icon-192x192.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="../images/wmicon/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="96x96" href="../images/wmicon/favicon-96x96.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="../images/wmicon/favicon-16x16.png">
+	<link rel="manifest" href="/manifest.json">
+	<meta name="msapplication-TileColor" content="#ffffff">
+	<meta name="msapplication-TileImage" content="../images/wmicon/ms-icon-144x144.png">
+	<meta name="theme-color" content="#ffffff">
+	<title>WeatherMood | Philip Vachon</title>
+	<link rel="stylesheet" href="../css/weathermood.css">
+	<script src="https://use.typekit.net/uzm6ree.js"></script>
+	<script>try{Typekit.load({ async: true });}catch(e){}</script>
+</head>
+<body>
+	<img id="logotop" src="../images/wmicon.png" alt="WM Icon">
+	<h1 id="pagetitle">WeatherMood</h1>
+	<h2>Make a Spotify playlist with the mood of any city's weather.</h2>
+	<div id="data-container">
+		<input type="text" id="city" placeholder="City">
+		<input type="text" id="artist-input" placeholder="Artist Name">
+		<button id="go-button" class="btn yellow button2">Generate Playlist</button>
+		<div id="stats"></div>
+		<div id="graph" class="box">
+			<div id="circle"></div>
+		</div>
+	</div>
+
+	<div id="playlist-container" class="box">
+		<div id="playlistName"></div>
+		<ul id="tracklist"></ul>
+		<button id="playlist_button" class="btn yellow button2"> Save Playlist!</button>
+	</div>
+	<div id="descriptionbox" class="box"><p>Using Spotify and Echonest's API, along with OpenWeather API, I am able to convert the weather of a city into a specific 'mood' of songs to reflect that weather. The 'Energy' of a song is represented by wind speed, and the 'Valence' (how positive or negative the sentiment of the song is) is represented by cloud cover. Those two data points create the mood of the playlist, which you can see in this graph. I also used components from <a href="http://materializecss.com">Materialize CSS</a> and <a href="http://labs.echonest.com/CityServer/roadtrip.html">Roadtrip Playlist</a> by Echonest's Paul Lamere. For more info about me, go <a href="www.philipvachon.com">here</a>.</p></div>
+
+ 	<script src="http://code.jquery.com/jquery-1.12.1.min.js"></script>
+ 	<script src="http://underscorejs.org/underscore-min.js"></script>
+	<script src="../js/weathermood.js"></script>
+	
+</body>
+</html>

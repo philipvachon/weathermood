@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+	<link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
+	<link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
+	<link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
+	<link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/manifest.json">
+	<meta name="msapplication-TileColor" content="#ffffff">
+	<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+	<meta name="theme-color" content="#ffffff">
+	<title>Making Playlist!</title>
+	<link rel="stylesheet" href="css/weathermood.css">
+	<script src="https://use.typekit.net/uzm6ree.js"></script>
+	<script>try{Typekit.load({ async: true });}catch(e){}</script>
+		<style type="text/css">
+
+			.site-wrapper {
+		        margin:20px;
+			}
+
+
+		    #info {
+		        margin:20px;
+		        margin-top:30px;
+		        margin-bottom:40px;
+		    }
+		</style>
+		</head>
+
+		<body onload="doit()">
+			<div class="container site-wrapper">
+				<div class="site-wrapper-inner">
+					<div id="creating" style="text-align: center;">
+						<h1>Creating playlist...</h1>
+		                <div id="status" class="progress" style="text-align: center;">
+		                	<div class="indeterminate" style="width: 0%;"></div>
+		                </div>
+					</div>
+					<div id="done" style="display: none;">
+						<h1 class='text-success' >Done!</h1>
+						<div id='info'> Playlist saved as: <div id="title" class="text-info"> </div></div>
+						<p>
+							<a class="btn yellow button2" id="playlistlink" style="text-decoration: none; color: black;">
+								Open playlist in Spotify
+							</a>
+						</p>
+					</div>
+					<div id="error" style="display: none;">
+						<h1 class='text-warning' >Trouble!</h1>
+						<div id='einfo'> Trouble saving that playlist.</div>
+					</div>
+				</div>
+			</div>
+
+			<script>
+		function authorize() {
+		    var client_id = '4c369231a4da4f6fb9d8c97e4ef64302';
+		    var redirect_uri = 'http://philipvachon.com/weathermoodcallback3.html';
+
+
+		    var url = 'https://accounts.spotify.com/authorize?client_id=' + client_id +
+		        '&response_type=token' +
+		        '&scope=playlist-modify-private' +
+		        '&redirect_uri=' + encodeURIComponent(redirect_uri);
+		        // define trackURIs to the songs object you've already gotten in data.whatever it is 
+		    localStorage.setItem('createplaylist-tracks', JSON.stringify(trackURIs));
+		    localStorage.setItem('createplaylist-name', title);
+		    var w = window.open(url, 'asdf', 'WIDTH=400,HEIGHT=500');
+
+		}
+
+
+		// GET TOKEN BELOW
+		function savePlaylist() {
+		        // var title = getPlaylistTitle();
+		        var client_id = '4c369231a4da4f6fb9d8c97e4ef64302';
+		        var redirect_uri = 'http://philipvachon.com/weathermoodcallback3.html';
+
+		        var url = 'https://accounts.spotify.com/authorize?client_id=' + client_id +
+		            '&response_type=token' +
+		            '&scope=playlist-modify-private' +
+		            '&redirect_uri=' + encodeURIComponent(redirect_uri);
+		            // makes the tracks object into a string so he can store it in local storage with stringify, then uses parse to make it back into an object when he gets the object back with getItem
+		        localStorage.removeItem("createplaylist-tracks");
+		        localStorage.removeItem("createplaylist-name");
+		        localStorage.setItem('createplaylist-tracks', JSON.stringify(trackURIs));
+		        localStorage.setItem('createplaylist-name', playlistName);
+		        var w = window.open(url, 'asdf', 'WIDTH=400,HEIGHT=500');
+		}
+
+		var g_access_token = '';
+		var g_username = '';
+		var g_tracks = [];
+
+		function getUsername(callback) {
+		    var url = 'https://api.spotify.com/v1/me';
+		    $.ajax(url, {
+		        dataType: 'json',
+		        headers: {
+		            'Authorization': 'Bearer ' + g_access_token
+		        },
+		        success: function(r) {
+		            callback(r.id);
+		        },
+		        error: function(r) {
+		            callback(null);
+		        }
+		    });
+		}
+
+		// MAKE THE PLAYLIST FUNCTION
+		function createPlaylist(username, name, callback) {
+		    var url = 'https://api.spotify.com/v1/users/' + username + '/playlists';
+		    $.ajax(url, {
+		        type: 'POST',
+		        data: JSON.stringify({
+		            'name': name,
+		            'public': false
+		        }),
+		        dataType: 'json',
+		        headers: {
+		            'Authorization': 'Bearer ' + g_access_token,
+		            'Content-Type': 'application/json'
+		        },
+		        success: function(r) {
+		            callback(r.id);
+		        },
+		        error: function(r) {
+		            callback(null);
+		        }
+		    });
+		}
+
+		function addTracksToPlaylist(username, playlist, tracks, start, callback) {
+		    var url = 'https://api.spotify.com/v1/users/' + username +
+		        '/playlists/' + playlist +
+		        '/tracks'; 
+		    var thisTracks = " ";
+		    var thisTracks = tracks.slice(0, tracks.length);
+		    $.ajax(url, {
+		        type: 'POST',
+		        data: JSON.stringify(thisTracks),
+		        dataType: 'json',
+		        processData:false,
+		        headers: {
+		            'Authorization': 'Bearer ' + g_access_token,
+		            'Content-Type': 'application/json'
+		        },
+		        success: function(r) {
+		            if (21 >= tracks.length) {
+		                callback('good');
+		            } else {
+		                status(Math.round(100 * start / tracks.length));
+		                addTracksToPlaylist(username, playlist, tracks, 0, callback);
+		            }
+		        },
+		        error: function(r, status, err) {
+		            callback(null);
+		        }
+		    });
+		}
+
+		function status(msg) {
+		    $(".determinate").css("width", msg + "%");
+		}
+
+		function doit() {
+		    // parse hash
+		    var hash = location.hash.replace(/#/g, '');
+		    var all = hash.split('&');
+		    var maxTracks = 21;
+		    var args = {};
+		    all.forEach(function(keyvalue) {
+		        var idx = keyvalue.indexOf('=');
+		        var key = keyvalue.substring(0, idx);
+		        var val = keyvalue.substring(idx + 1);
+		        args[key] = val;
+		    });
+
+		    g_name = localStorage.getItem('createplaylist-name');
+		    g_tracks = JSON.parse(localStorage.getItem('createplaylist-tracks'));
+		    console.log(g_tracks);
+
+		    // g_tracks = g_tracks.slice(maxTracks);
+
+
+		    if (typeof(args['access_token']) != 'undefined') {
+		        // got access token
+		        g_access_token = args['access_token'];
+		    }
+
+		    getUsername(function(username) {
+		        createPlaylist(username, g_name, function(playlist) {
+		            if (playlist) {
+		                addTracksToPlaylist(username, playlist, g_tracks, 0, function(ok) {
+		                    if (ok) {
+		                        $('#playlistlink').attr('href', 'spotify:user:'+username+':playlist:'+playlist);
+		                        $("#title").text(g_name);
+		                        $('#done').show();
+		                        $('#creating').hide();
+		                    } else {
+		                        $('#error').show();
+		                        $('#creating').hide();
+		                    }
+		                });
+		            } else {
+		                $("#error").show();
+		                $('#creating').hide();
+		            }
+		        });
+		    });
+		}
+
+		</script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script src="http://code.jquery.com/jquery-1.12.1.min.js"></script>
+		<script src="http://underscorejs.org/underscore-min.js"></script>
+</body>
+</html>
